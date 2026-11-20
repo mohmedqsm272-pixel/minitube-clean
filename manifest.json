@@ -1,0 +1,10 @@
+{
+  "name": "MiniTube",
+  "short_name": "MiniTube",
+  "description": "Your personal video experience",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#ff3030",
+  "orientation": "portrait"
+}

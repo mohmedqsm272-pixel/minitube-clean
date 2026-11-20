@@ -1,321 +1,178 @@
-
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MiniTube</title>
-
-<!-- PWA Settings -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#ff3030">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="MiniTube">
-
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-}
-
-header {
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 22px;
-    background: #181818;
-    border-bottom: 1px solid #292929;
-}
-
-.logo {
-    color: #ff3030;
-    font-size: 25px;
-    font-weight: bold;
-}
-
-.logo span {
-    color: white;
-}
-
-main {
-    width: min(850px, 94%);
-    margin: 30px auto;
-}
-
-.search-box {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.search-box input {
-    flex: 1;
-    min-width: 0;
-    padding: 14px;
-    background: #222;
-    color: white;
-    border: 1px solid #444;
-    border-radius: 8px;
-    outline: none;
-    font-size: 15px;
-}
-
-.search-box input:focus {
-    border-color: #ff3030;
-}
-
-.search-box button {
-    background: #ff3030;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0 22px;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.search-box button:hover {
-    background: #d92323;
-}
-
-#status {
-    color: #aaa;
-    text-align: center;
-    margin: 20px 0;
-    font-size: 14px;
-}
-
-#results {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.video-card {
-    display: grid;
-    grid-template-columns: 125px minmax(0, 1fr);
-    direction: ltr;
-    align-items: center;
-    width: 100%;
-    background: #202020;
-    border: 1px solid #333;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.video-card img {
-    grid-column: 1;
-    grid-row: 1;
-    display: block;
-    width: 125px;
-    height: 82px;
-    object-fit: cover;
-}
-
-.video-info {
-    grid-column: 2;
-    grid-row: 1;
-    min-width: 0;
-    padding: 10px 14px;
-    text-align: left;
-}
-
-.video-info h3 {
-    font-size: 14px;
-    line-height: 1.4;
-    margin-bottom: 7px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.video-info p {
-    color: #aaa;
-    font-size: 12px;
-}
-
-.player {
-    grid-column: 1 / -1;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: black;
-}
-
-.player iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-@media (max-width: 500px) {
-    main {
-        margin-top: 20px;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="MiniTube — a clean, personal YouTube search experience.">
+  <title>MiniTube</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: dark; --bg:#050505; --panel:#111; --line:#242424; --muted:#999; --red:#ed1c24; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:#f5f5f5; font-family:Arial,Helvetica,sans-serif; }
+    .shell { width:min(920px, calc(100% - 32px)); margin:0 auto; padding:30px 0 56px; }
+    header { display:flex; align-items:center; gap:13px; margin-bottom:32px; }
+    .brand-mark { width:44px; height:44px; background:#000; border:1px solid #292929; border-radius:12px; display:grid; place-items:center; flex:none; }
+    .brand-mark svg { width:28px; height:28px; }
+    .brand { font-size:25px; font-weight:800; letter-spacing:-1px; }
+    .brand span { color:var(--red); }
+    .intro { margin:0 0 20px; color:#aaa; font-size:14px; }
+    .search { display:flex; gap:10px; margin-bottom:24px; }
+    .search input { min-width:0; flex:1; background:#111; border:1px solid #303030; border-radius:12px; padding:15px 16px; color:#fff; font-size:16px; outline:none; }
+    .search input:focus { border-color:#777; }
+    .search button { border:0; border-radius:12px; background:#f2f2f2; color:#090909; font-size:15px; font-weight:700; padding:0 23px; cursor:pointer; }
+    .search button:disabled { opacity:.55; cursor:wait; }
+    #status { min-height:22px; margin:0 0 14px; color:var(--muted); font-size:14px; }
+    .results { display:flex; flex-direction:column; gap:11px; }
+    .video-row { display:flex; align-items:center; gap:15px; width:100%; padding:10px; background:#101010; border:1px solid #202020; border-radius:12px; color:inherit; text-align:left; cursor:pointer; transition:border-color .15s,background .15s; }
+    .video-row:hover,.video-row:focus-visible { border-color:#555; background:#151515; outline:none; }
+    .thumb-wrap { width:168px; aspect-ratio:16/9; flex:none; overflow:hidden; border-radius:8px; background:#222; }
+    .thumb-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+    .video-info { min-width:0; }
+    .video-title { margin:0 0 8px; font-size:15px; line-height:1.4; font-weight:700; overflow-wrap:anywhere; }
+    .channel { margin:0; color:#999; font-size:13px; }
+    .empty { padding:34px 18px; border:1px dashed #333; border-radius:12px; color:#999; text-align:center; }
+    .player-backdrop { position:fixed; inset:0; z-index:5; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,.88); }
+    .player-backdrop.open { display:flex; }
+    .player-box { width:min(900px,100%); }
+    .player-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:10px; }
+    .player-title { font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .close-player { border:1px solid #444; background:#161616; color:#fff; border-radius:8px; padding:8px 12px; cursor:pointer; }
+    .player-frame { width:100%; aspect-ratio:16/9; border:0; border-radius:12px; background:#000; }
+    footer { margin-top:34px; color:#666; font-size:12px; text-align:center; }
+    @media (max-width:560px) {
+      .shell { width:calc(100% - 22px); padding-top:20px; }
+      header { margin-bottom:24px; }
+      .search { gap:7px; }
+      .search button { padding:0 15px; }
+      .video-row { gap:10px; padding:8px; }
+      .thumb-wrap { width:116px; }
+      .video-title { font-size:13px; margin-bottom:5px; }
+      .channel { font-size:11px; }
     }
-
-    .video-card {
-        grid-template-columns: 110px minmax(0, 1fr);
-    }
-
-    .video-card img {
-        width: 110px;
-        height: 76px;
-    }
-
-    .video-info h3 {
-        font-size: 12px;
-    }
-}
-</style>
+  </style>
 </head>
-
 <body>
+  <main class="shell">
+    <header>
+      <div class="brand-mark" aria-label="MiniTube logo">
+        <svg viewBox="0 0 100 100" role="img" aria-label="Red four-point star">
+          <path d="M50 5 L63 37 L95 50 L63 63 L50 95 L37 63 L5 50 L37 37 Z" fill="#ed1c24"/>
+        </svg>
+      </div>
+      <div class="brand">Mini<span>Tube</span></div>
+    </header>
 
-<header>
-    <div class="logo">Mini<span>Tube</span></div>
-</header>
+    <p class="intro">Find videos on YouTube.</p>
+    <form class="search" id="searchForm">
+      <input id="query" type="search" placeholder="Search videos..." autocomplete="off" aria-label="Search videos">
+      <button id="searchButton" type="submit">Search</button>
+    </form>
+    <p id="status" role="status" aria-live="polite">Search for something to get started.</p>
+    <section class="results" id="results" aria-label="Search results"></section>
+    <footer>MiniTube · Search powered by YouTube Data API</footer>
+  </main>
 
-<main>
-    <div class="search-box">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search for videos..."
-        >
-        <button onclick="searchVideos()">Search</button>
+  <div class="player-backdrop" id="playerBackdrop" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="player-box">
+      <div class="player-top">
+        <div class="player-title" id="playerTitle"></div>
+        <button class="close-player" id="closePlayer" type="button">Close</button>
+      </div>
+      <iframe class="player-frame" id="playerFrame" title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
+  </div>
 
-    <div id="status">Search for your favorite videos</div>
-    <div id="results"></div>
-</main>
+  <script>
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('query');
+    const button = document.getElementById('searchButton');
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+    const backdrop = document.getElementById('playerBackdrop');
+    const playerFrame = document.getElementById('playerFrame');
+    const playerTitle = document.getElementById('playerTitle');
 
-<script>
-const API_URL = "/api/search";
+    function showStatus(message) { statusEl.textContent = message; }
+    function openPlayer(videoId, title) {
+      playerTitle.textContent = title;
+      playerFrame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0`;
+      backdrop.classList.add('open');
+    }
+    function closePlayer() {
+      backdrop.classList.remove('open');
+      playerFrame.src = '';
+    }
+    document.getElementById('closePlayer').addEventListener('click', closePlayer);
+    backdrop.addEventListener('click', event => { if (event.target === backdrop) closePlayer(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closePlayer(); });
 
-// Register Service Worker
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js")
-            .then(() => {
-                console.log("MiniTube service worker registered");
-            })
-            .catch(error => {
-                console.error("Service Worker error:", error);
-            });
-    });
-}
-
-async function searchVideos() {
-    const input = document.getElementById("searchInput");
-    const results = document.getElementById("results");
-    const status = document.getElementById("status");
-
-    const query = input.value.trim();
-
-    if (!query) {
-        status.textContent = "Please enter a search term";
+    function renderResults(items) {
+      resultsEl.replaceChildren();
+      if (!items.length) {
+        resultsEl.innerHTML = '<div class="empty">No videos found. Try another search.</div>';
         return;
+      }
+      for (const item of items) {
+        const id = item.id?.videoId;
+        const snippet = item.snippet || {};
+        if (!id) continue;
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'video-row';
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb-wrap';
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.alt = '';
+        img.src = snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url || '';
+        thumb.appendChild(img);
+        const info = document.createElement('div');
+        info.className = 'video-info';
+        const title = document.createElement('p');
+        title.className = 'video-title';
+        title.textContent = snippet.title || 'Untitled video';
+        const channel = document.createElement('p');
+        channel.className = 'channel';
+        channel.textContent = snippet.channelTitle || '';
+        info.append(title, channel);
+        row.append(thumb, info);
+        row.addEventListener('click', () => openPlayer(id, snippet.title || 'YouTube video'));
+        resultsEl.appendChild(row);
+      }
     }
 
-    results.innerHTML = "";
-    status.textContent = "Searching...";
-
-    try {
-        const response = await fetch(
-            `${API_URL}?q=${encodeURIComponent(query)}`
-        );
-
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      const q = input.value.trim();
+      if (!q) { showStatus('Please enter a search term.'); input.focus(); return; }
+      button.disabled = true;
+      button.textContent = 'Searching…';
+      resultsEl.replaceChildren();
+      showStatus('Searching YouTube…');
+      try {
+        const response = await fetch(`/.netlify/functions/search?q=${encodeURIComponent(q)}`);
         const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || data.error || 'Search failed.');
+        const items = Array.isArray(data.items) ? data.items : [];
+        renderResults(items);
+        showStatus(`${items.length} result${items.length === 1 ? '' : 's'} found.`);
+      } catch (error) {
+        showStatus(error.message || 'Something went wrong. Please try again.');
+        resultsEl.innerHTML = '<div class="empty">Search could not be completed. Check the server configuration and try again.</div>';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Search';
+      }
+    });
 
-        if (!response.ok) {
-            throw new Error(data.error?.message || "Search failed");
-        }
-
-        if (!data.items || data.items.length === 0) {
-            status.textContent = "No videos found";
-            return;
-        }
-
-        status.textContent = `${data.items.length} videos found`;
-
-        data.items.forEach(video => {
-            const videoId = video.id.videoId;
-            const title = video.snippet.title;
-            const channel = video.snippet.channelTitle;
-
-            const thumbnail =
-                video.snippet.thumbnails.medium?.url ||
-                video.snippet.thumbnails.default.url;
-
-            const card = document.createElement("div");
-            card.className = "video-card";
-
-            const img = document.createElement("img");
-            img.src = thumbnail;
-            img.alt = title;
-
-            const info = document.createElement("div");
-            info.className = "video-info";
-
-            const heading = document.createElement("h3");
-            heading.textContent = title;
-
-            const channelText = document.createElement("p");
-            channelText.textContent = channel;
-
-            info.append(heading, channelText);
-
-            const player = document.createElement("div");
-            player.className = "player";
-            player.hidden = true;
-
-            card.append(img, info, player);
-
-            card.addEventListener("click", () => {
-                if (player.hidden) {
-                    player.hidden = false;
-                    player.innerHTML = `
-                        <iframe
-                            src="https://www.youtube.com/embed/${videoId}"
-                            title="YouTube video player"
-                            allowfullscreen
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        ></iframe>
-                    `;
-                } else {
-                    player.hidden = true;
-                    player.innerHTML = "";
-                }
-            });
-
-            results.appendChild(card);
-        });
-
-    } catch (error) {
-        console.error(error);
-        status.textContent =
-            "Something went wrong. Make sure the MiniTube server is running.";
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
     }
-}
-
-document.getElementById("searchInput").addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        searchVideos();
-    }
-});
-</script>
-
+  </script>
 </body>
 </html>
